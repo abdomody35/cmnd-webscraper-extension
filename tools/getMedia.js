@@ -11,7 +11,7 @@ const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 const SCRAPER = {
   name: "media_scraper",
   description:
-    "Gets all image, audio, video and other media links from the givel url. (in test)",
+    "Gets all image, audio, video and other media links from the givel url.",
   category: "media",
   functionType: "backend",
   dangerous: false,
@@ -23,17 +23,15 @@ const SCRAPER = {
   runCmd: async ({ url }, memory) => {
     try {
       const config = {
-        type: "link",
-        whiteList: [url],
+        type: "scope",
       };
       const response = await axios.post(
         "http://localhost:6969/api/scrape?url=" + url,
         config
       );
-      const mediaItem = response.data.filter((item) =>
-        item.title.endsWith(" - media")
-      );
-      mediaItem ? (memory[mediaItem.title] = mediaItem.content) : {};
+      for (const { title, content } of response.data) {
+        memory[title] = content;
+      }
       return {
         responseString: "Scraping completed successfully",
         memory: memory,
