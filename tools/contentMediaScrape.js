@@ -6,16 +6,16 @@ const yupToJsonSchema = require("../yupToJsonSchema");
 const API = process.env.API_URL;
 
 const scraperSchema = yup.object({
-  baseUrl: yup.string().required(),
+  url: yup.string().required(),
 });
 
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
 const SCRAPER = {
-  name: "media_crawler",
+  name: "content_and_media_scraper",
   description:
-    "Gets all image, audio, video and other media links all pages starting from the base url.",
-  category: "media",
+    "Gets both the content and the image, audio, video and other media links from the page.",
+  category: "untitled",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
@@ -23,14 +23,15 @@ const SCRAPER = {
   parameters: scraperJSONSchema,
   rerun: false,
   rerunWithDifferentParameters: false,
-  runCmd: async ({ baseUrl }, memory) => {
+  runCmd: async ({ url }, memory) => {
     try {
       const config = {
-        type: "regex",
+        type: "crawl",
+        whiteList: [url],
       };
-      const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
+      const response = await axios.post(API + "/scrape?url=" + url, config);
       for (const { title, content } of response.data) {
-        if (title.endsWith(" - media")) memory[title] = content;
+        memory[title] = content;
       }
       return {
         responseString: "Scraping completed successfully",

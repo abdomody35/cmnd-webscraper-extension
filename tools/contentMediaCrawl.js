@@ -12,10 +12,10 @@ const scraperSchema = yup.object({
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
 const SCRAPER = {
-  name: "media_crawler",
+  name: "content_and_media_crawler",
   description:
-    "Gets all image, audio, video and other media links all pages starting from the base url.",
-  category: "media",
+    "Gets both the content and the image, audio, video and other media links from all pages starting from the base url.",
+  category: "untitled",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
@@ -26,11 +26,11 @@ const SCRAPER = {
   runCmd: async ({ baseUrl }, memory) => {
     try {
       const config = {
-        type: "regex",
+        type: "crawl",
       };
       const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
       for (const { title, content } of response.data) {
-        if (title.endsWith(" - media")) memory[title] = content;
+        memory[title] = content;
       }
       return {
         responseString: "Scraping completed successfully",

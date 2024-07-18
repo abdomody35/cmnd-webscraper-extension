@@ -6,6 +6,8 @@ const REGEX_CRAWLER = require("./tools/regexGuidedCrawl");
 const WHITE_LIST_CRAWLER = require("./tools/listCrawl");
 const MEDIA_SCRAPER = require("./tools/getMedia");
 const MEDIA_CRAWLER = require("./tools/getMediaCrawl");
+const CONTENT_MEDIA_SCRAPER = require("./tools/contentMediaScrape")
+const CONTEXT_MEDIA_CRAWLER = require("./tools/contentMediaCrawl")
 
 const tools = [
   SCRAPER,
@@ -16,5 +18,7 @@ const tools = [
   WHITE_LIST_CRAWLER,
   MEDIA_SCRAPER,
   MEDIA_CRAWLER,
+  CONTENT_MEDIA_SCRAPER,
+  CONTEXT_MEDIA_CRAWLER,
 ];
 module.exports = tools;
