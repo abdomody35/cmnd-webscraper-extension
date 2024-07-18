@@ -21,8 +21,8 @@ const SCRAPER = {
   associatedCommands: [],
   prerequisites: [],
   parameters: scraperJSONSchema,
-  rerun: true,
-  rerunWithDifferentParameters: true,
+  rerun: false,
+  rerunWithDifferentParameters: false,
   runCmd: async ({ urlList }, memory) => {
     try {
       const config = {

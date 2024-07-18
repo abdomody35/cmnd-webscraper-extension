@@ -20,8 +20,8 @@ const SCRAPER = {
   associatedCommands: [],
   prerequisites: [],
   parameters: scraperJSONSchema,
-  rerun: true,
-  rerunWithDifferentParameters: true,
+  rerun: false,
+  rerunWithDifferentParameters: false,
   runCmd: async ({ baseUrl }, memory) => {
     try {
       const response = await axios.post(API + "/scrape?url=" + baseUrl);
