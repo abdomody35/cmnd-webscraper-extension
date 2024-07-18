@@ -12,7 +12,7 @@ const scraperSchema = yup.object({
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
 const SCRAPER = {
-  name: "targeted_links_scrpaer",
+  name: "targeted_links_scraper",
   description: "Scrapes all the pages in the white list.",
   category: "scraping",
   functionType: "backend",
