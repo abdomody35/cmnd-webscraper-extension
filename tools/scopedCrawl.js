@@ -1,6 +1,9 @@
+require("dotenv").config();
 const axios = require("axios");
 const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
+
+const API = process.env.API_URL;
 
 const scraperSchema = yup.object({
   baseUrl: yup.string().required(),
@@ -29,10 +32,7 @@ const SCRAPER = {
         whiteList: whiteList,
         blackList: blackList,
       };
-      const response = await axios.post(
-        "http://localhost:6969/api/scrape?url=" + baseUrl,
-        config
-      );
+      const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
       for (const { url, title, content } of response.data) {
         memory[url] = { title, content };
       }
