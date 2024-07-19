@@ -2,27 +2,25 @@ require("dotenv").config();
 const axios = require("axios");
 const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
-
 const API = process.env.API_URL;
 
-const scraperSchema = yup.object({
+const crawlerSchema = yup.object({
   baseUrl: yup.string().required(),
-  whiteList: yup.array().of(yup.string()).required(),
-  blackList: yup.array().of(yup.string()).required(),
+  whiteList: yup.array().of(yup.string()),
+  blackList: yup.array().of(yup.string()),
 });
 
-const scraperJSONSchema = yupToJsonSchema(scraperSchema);
+const crawlerJSONSchema = yupToJsonSchema(crawlerSchema);
 
-const SCRAPER = {
-  name: "scoped_crawler",
-  description:
-    "Scrapes all pages strating from a base url based on a white and/or black list of scopes to follow.",
-  category: "web crawling",
+const CRAWL_MEDIA_USING_SCOPES = {
+  name: "crawl_using_scopes_media",
+  description: "Crawls media using scopes with whitelist and blacklist.",
+  category: "media_crawling",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
   prerequisites: [],
-  parameters: scraperJSONSchema,
+  parameters: crawlerJSONSchema,
   rerun: false,
   rerunWithDifferentParameters: false,
   runCmd: async ({ baseUrl, whiteList, blackList }, memory) => {
@@ -30,14 +28,17 @@ const SCRAPER = {
       const config = {
         type: "scope",
         whiteList: whiteList,
-        blackList: blackList,
+        blackList: blackList || [],
+        extractMedia: true,
+        extractContent: false,
       };
       const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
       for (const { url, title, content } of response.data) {
-        memory[url] = { title, content };
+        memory[url] = { title: title, content: content };
       }
       return {
-        responseString: "Scraping completed successfully",
+        responseString:
+          "Crawling completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
@@ -46,4 +47,4 @@ const SCRAPER = {
   },
 };
 
-module.exports = SCRAPER;
+module.exports = CRAWL_MEDIA_USING_SCOPES;

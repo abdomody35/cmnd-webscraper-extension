@@ -2,7 +2,6 @@ require("dotenv").config();
 const axios = require("axios");
 const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
-
 const API = process.env.API_URL;
 
 const scraperSchema = yup.object({
@@ -11,9 +10,9 @@ const scraperSchema = yup.object({
 
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
-const SCRAPER = {
-  name: "targeted_links_scraper",
-  description: "Scrapes all the pages in the white list.",
+const SCRAPE_CONTENT_MEDIA_LIST_PAGES = {
+  name: "scrape_list_content_media",
+  description: "Scrapes content and media from a list of pages.",
   category: "scraping",
   functionType: "backend",
   dangerous: false,
@@ -27,16 +26,18 @@ const SCRAPER = {
       const config = {
         type: "link",
         whiteList: urlList,
+        extractMedia: true,
       };
       const response = await axios.post(
         API + "/scrape?url=" + urlList[0],
         config
       );
       for (const { url, title, content } of response.data) {
-        memory[url] = { title, content };
+        memory[url] = { title: title, content: content };
       }
       return {
-        responseString: "Scraping completed successfully",
+        responseString:
+          "Scraping completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
@@ -45,4 +46,4 @@ const SCRAPER = {
   },
 };
 
-module.exports = SCRAPER;
+module.exports = SCRAPE_CONTENT_MEDIA_LIST_PAGES;

@@ -2,20 +2,18 @@ require("dotenv").config();
 const axios = require("axios");
 const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
-
 const API = process.env.API_URL;
 
 const scraperSchema = yup.object({
-  baseUrl: yup.string().required(),
+  urlList: yup.array().of(yup.string()).required(),
 });
 
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
-const SCRAPER = {
-  name: "media_crawler",
-  description:
-    "Gets all image, audio, video and other media links all pages starting from the base url.",
-  category: "media",
+const SCRAPE_LIST_PAGES = {
+  name: "scrape_list",
+  description: "Scrapes a list of pages.",
+  category: "scraping",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
@@ -23,17 +21,22 @@ const SCRAPER = {
   parameters: scraperJSONSchema,
   rerun: false,
   rerunWithDifferentParameters: false,
-  runCmd: async ({ baseUrl }, memory) => {
+  runCmd: async ({ urlList }, memory) => {
     try {
       const config = {
-        type: "regex",
+        type: "link",
+        whiteList: urlList,
       };
-      const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
-      for (const { title, content } of response.data) {
-        if (title.endsWith(" - media")) memory[title] = content;
+      const response = await axios.post(
+        API + "/scrape?url=" + urlList[0],
+        config
+      );
+      for (const { url, title, content } of response.data) {
+        memory[url] = { title: title, content: content };
       }
       return {
-        responseString: "Scraping completed successfully",
+        responseString:
+          "Scraping completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
@@ -41,4 +44,5 @@ const SCRAPER = {
     }
   },
 };
-module.exports = SCRAPER;
+
+module.exports = SCRAPE_LIST_PAGES;

@@ -2,7 +2,6 @@ require("dotenv").config();
 const axios = require("axios");
 const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
-
 const API = process.env.API_URL;
 
 const scraperSchema = yup.object({
@@ -11,11 +10,10 @@ const scraperSchema = yup.object({
 
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
-const SCRAPER = {
-  name: "content_and_media_scraper",
-  description:
-    "Gets both the content and the image, audio, video and other media links from the page.",
-  category: "untitled",
+const SCRAPE_MEDIA_SINGLE_PAGE = {
+  name: "scrape_single_page_media",
+  description: "Scrapes media from a single page.",
+  category: "media_scraping",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
@@ -26,15 +24,17 @@ const SCRAPER = {
   runCmd: async ({ url }, memory) => {
     try {
       const config = {
-        type: "crawl",
-        whiteList: [url],
+        type: "link",
+        extractMedia: true,
+        extractContent: false,
       };
       const response = await axios.post(API + "/scrape?url=" + url, config);
-      for (const { title, content } of response.data) {
-        memory[title] = content;
+      for (const { url, title, content } of response.data) {
+        memory[url] = { title: title, content: content };
       }
       return {
-        responseString: "Scraping completed successfully",
+        responseString:
+          "Scraping completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
@@ -42,4 +42,5 @@ const SCRAPER = {
     }
   },
 };
-module.exports = SCRAPER;
+
+module.exports = SCRAPE_MEDIA_SINGLE_PAGE;

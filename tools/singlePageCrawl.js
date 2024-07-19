@@ -11,8 +11,8 @@ const scraperSchema = yup.object({
 
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
-const SCRAPER = {
-  name: "url_crawler",
+const CRAWL_BASE_URL = {
+  name: "crawl_base_url",
   description: "Scrapes all pages strating from a base url.",
   category: "crawling",
   functionType: "backend",
@@ -24,12 +24,16 @@ const SCRAPER = {
   rerunWithDifferentParameters: false,
   runCmd: async ({ baseUrl }, memory) => {
     try {
-      const response = await axios.post(API + "/scrape?url=" + baseUrl);
+      const config = {
+        type: "crawl",
+      };
+      const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
       for (const { url, title, content } of response.data) {
-        memory[url] = { title, content };
+        memory[url] = { title: title, content: content };
       }
       return {
-        responseString: "Scraping completed successfully",
+        responseString:
+          "Crawling completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
@@ -38,4 +42,4 @@ const SCRAPER = {
   },
 };
 
-module.exports = SCRAPER;
+module.exports = CRAWL_BASE_URL;

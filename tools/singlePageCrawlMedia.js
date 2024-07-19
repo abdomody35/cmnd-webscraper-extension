@@ -5,15 +5,15 @@ const yupToJsonSchema = require("../yupToJsonSchema");
 const API = process.env.API_URL;
 
 const crawlerSchema = yup.object({
-  urlList: yup.array().of(yup.string()).required(),
+  baseUrl: yup.string().required(),
 });
 
 const crawlerJSONSchema = yupToJsonSchema(crawlerSchema);
 
-const CRAWL_LIST_PAGES = {
-  name: "crawl_list",
-  description: "Crawls a list of links.",
-  category: "crawling",
+const CRAWL_MEDIA_BASE_URL = {
+  name: "crawl_base_url_media",
+  description: "Crawls media starting from the base url.",
+  category: "media_crawling",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
@@ -21,16 +21,14 @@ const CRAWL_LIST_PAGES = {
   parameters: crawlerJSONSchema,
   rerun: false,
   rerunWithDifferentParameters: false,
-  runCmd: async ({ urlList }, memory) => {
+  runCmd: async ({ baseUrl }, memory) => {
     try {
       const config = {
         type: "crawl",
-        whiteList: urlList,
+        extractMedia: true,
+        extractContent: false,
       };
-      const response = await axios.post(
-        API + "/scrape?url=" + urlList[0],
-        config
-      );
+      const response = await axios.post(API + "/scrape?url=" + baseUrl, config);
       for (const { url, title, content } of response.data) {
         memory[url] = { title: title, content: content };
       }
@@ -45,4 +43,4 @@ const CRAWL_LIST_PAGES = {
   },
 };
 
-module.exports = CRAWL_LIST_PAGES;
+module.exports = CRAWL_MEDIA_BASE_URL;

@@ -10,9 +10,9 @@ const crawlerSchema = yup.object({
 
 const crawlerJSONSchema = yupToJsonSchema(crawlerSchema);
 
-const CRAWL_LIST_PAGES = {
-  name: "crawl_list",
-  description: "Crawls a list of links.",
+const CRAWL_CONTENT_MEDIA_LIST_PAGES = {
+  name: "crawl_list_content_media",
+  description: "Crawls content and media from a list of pages.",
   category: "crawling",
   functionType: "backend",
   dangerous: false,
@@ -26,6 +26,7 @@ const CRAWL_LIST_PAGES = {
       const config = {
         type: "crawl",
         whiteList: urlList,
+        extractMedia: true,
       };
       const response = await axios.post(
         API + "/scrape?url=" + urlList[0],
@@ -45,4 +46,4 @@ const CRAWL_LIST_PAGES = {
   },
 };
 
-module.exports = CRAWL_LIST_PAGES;
+module.exports = CRAWL_CONTENT_MEDIA_LIST_PAGES;
