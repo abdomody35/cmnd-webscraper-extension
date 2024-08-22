@@ -43,8 +43,8 @@ const CRAWL_USING_REGEX = {
         type: "link",
       };
       const response = await axios.post(API + "/scrape?url=" + url, config);
-      for (const { url, title, content } of response.data) {
-        memory[url] = { title: title, content: content };
+      for (const { title, content } of response.data) {
+        memory[name] = { title: title, content: content };
       }
       console.log("Successful");
       return {
