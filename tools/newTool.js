@@ -25,6 +25,7 @@ const CRAWL_USING_REGEX = {
   rerunWithDifferentParameters: false,
   runCmd: async ({ name }, memory) => {
     try {
+      console.log("Getting information on " + name);
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto(
@@ -45,12 +46,14 @@ const CRAWL_USING_REGEX = {
       for (const { url, title, content } of response.data) {
         memory[url] = { title: title, content: content };
       }
+      console.log("Successful");
       return {
         responseString:
           "Scraping completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
+      console.error("Error:", err);
       return "Error trying to execute the tool";
     }
   },
