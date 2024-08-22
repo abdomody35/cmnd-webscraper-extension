@@ -26,21 +26,18 @@ const CRAWL_USING_REGEX = {
   runCmd: async ({ name }, memory) => {
     try {
       const browser = await puppeteer.launch();
-      console.log("browser launched");
       const page = await browser.newPage();
-      console.log("page opened");
-      await page.goto(`https://www.google.com/search?q=about%20${name}`);
-      console.log("navigated");
-      await page.waitForSelector("#search a");
-      console.log("waited for results");
-      const links = await page.$$eval("#search a", (links) =>
-        links.map((link) => link.href)
+      await page.goto(
+        `https://www.google.com/search?q=about+${name.replace(" ", "+")}`
       );
-      console.log("got links " + links);
+      await page.waitForSelector("#search a");
+      const links = await page.$$eval("#search a", (links) =>
+        links
+          .map((link) => link.href)
+          .filter((link) => !link.includes("google.com/search"))
+      );
       const url = links[0];
-      console.log("got url " + url);
       await browser.close();
-      console.log("browser Closed");
       const config = {
         type: "link",
       };
