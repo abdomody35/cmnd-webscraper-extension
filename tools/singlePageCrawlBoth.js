@@ -20,7 +20,7 @@ const CRAWL_CONTENT_MEDIA_BASE_URL = {
   prerequisites: [],
   parameters: crawlerJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ baseUrl }, memory) => {
     try {
       const config = {

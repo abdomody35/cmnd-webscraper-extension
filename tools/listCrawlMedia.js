@@ -20,7 +20,7 @@ const CRAWL_MEDIA_LIST_PAGES = {
   prerequisites: [],
   parameters: crawlerJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ urlList }, memory) => {
     try {
       const config = {

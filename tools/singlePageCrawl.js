@@ -21,7 +21,7 @@ const CRAWL_BASE_URL = {
   prerequisites: [],
   parameters: scraperJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ baseUrl }, memory) => {
     try {
       const config = {

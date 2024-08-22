@@ -20,7 +20,7 @@ const SCRAPE_SINGLE_PAGE = {
   prerequisites: [],
   parameters: scraperJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ url }, memory) => {
     try {
       const config = {

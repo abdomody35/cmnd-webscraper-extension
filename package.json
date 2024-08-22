@@ -1,12 +1,12 @@
 {
-	"name": "cmnd-extension-sample-nodejs",
+	"name": "cmnd-webscraper-extension",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
 		"start": "nodemon index.js"
 	},
-	"author": "Daniel Teddy",
+	"author": "Abdelrahman Mostafa",
 	"license": "ISC",
 	"dependencies": {
 		"@sodaru/yup-to-json-schema": "^2.0.1",

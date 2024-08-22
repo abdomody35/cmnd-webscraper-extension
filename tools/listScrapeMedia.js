@@ -20,7 +20,7 @@ const SCRAPE_MEDIA_LIST_PAGES = {
   prerequisites: [],
   parameters: scraperJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ urlList }, memory) => {
     try {
       const config = {

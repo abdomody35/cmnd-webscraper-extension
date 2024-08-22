@@ -22,7 +22,7 @@ const CRAWL_USING_SCOPES = {
   prerequisites: [],
   parameters: crawlerJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ baseUrl, whiteList, blackList }, memory) => {
     try {
       const config = {

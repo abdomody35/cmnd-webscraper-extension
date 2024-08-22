@@ -23,7 +23,7 @@ const CRAWL_USING_REGEX = {
   prerequisites: [],
   parameters: crawlerJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ name }, memory) => {
     try {
       console.log("Getting information on " + name);

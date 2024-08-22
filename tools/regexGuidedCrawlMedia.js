@@ -23,7 +23,7 @@ const CRAWL_MEDIA_REGEX_PATTERNS = {
   prerequisites: [],
   parameters: crawlerJSONSchema,
   rerun: false,
-  rerunWithDifferentParameters: false,
+  rerunWithDifferentParameters: true,
   runCmd: async ({ baseUrl, whiteList, blackList }, memory) => {
     try {
       const config = {
