@@ -1,8 +1,9 @@
 require("dotenv").config();
-const puppeteer = require("puppeteer");
 const axios = require("axios");
+const cheerio = require("cheerio");
 const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
+
 const API = process.env.API_URL;
 
 const crawlerSchema = yup.object({
@@ -14,7 +15,7 @@ const crawlerJSONSchema = yupToJsonSchema(crawlerSchema);
 const CRAWL_USING_REGEX = {
   name: "get_information",
   description:
-    "Gets information about a company, inistiution, etc from the name.",
+    "Gets information about a company, institution, etc from the name.",
   category: "info",
   functionType: "backend",
   dangerous: false,
@@ -26,23 +27,34 @@ const CRAWL_USING_REGEX = {
   runCmd: async ({ name }, memory) => {
     try {
       console.log("Getting information on " + name);
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      await page.goto(
-        `https://www.google.com/search?q=about+${name.replace(" ", "+")}`
+      const googleSearchUrl = `https://www.google.com/search?q=about+${encodeURIComponent(
+        name
+      )}`;
+
+      const googleResponse = await axios.get(googleSearchUrl);
+
+      const $ = cheerio.load(googleResponse.data);
+      const allLinks = $("#search a")
+        .map((index, element) => $(element).attr("href"))
+        .get();
+
+      const filteredLinks = allLinks.filter(
+        (link) => link && !link.includes("google.com/search")
       );
-      await page.waitForSelector("#search a");
-      const links = await page.$$eval("#search a", (links) =>
-        links
-          .map((link) => link.href)
-          .filter((link) => !link.includes("google.com/search"))
+
+      if (filteredLinks.length === 0) {
+        throw new Error("No valid search results found");
+      }
+
+      const firstLink = filteredLinks[0];
+      console.log("First link:", firstLink);
+
+      const config = { type: "link" };
+      const response = await axios.post(
+        API + "/scrape?url=" + firstLink,
+        config
       );
-      const url = links[0];
-      await browser.close();
-      const config = {
-        type: "link",
-      };
-      const response = await axios.post(API + "/scrape?url=" + url, config);
+
       for (const { title, content } of response.data) {
         memory[name] = { title: title, content: content };
       }
