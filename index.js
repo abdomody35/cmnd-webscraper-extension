@@ -6,6 +6,10 @@ const app = express();
 const tools = require("./tools");
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the CMND.AI WebScraper Extension" });
+});
+
 app.get("/cmnd-tools", (req, res) => {
   const getTools = () => {
     const toolsMapped = tools.map((t) => {
