@@ -6,14 +6,19 @@ const API = process.env.API_URL;
 
 const scraperSchema = yup.object({
   urlList: yup.array().of(yup.string()).required(),
+  content: yup.bool(),
+  images: yup.bool(),
+  videos: yup.bool(),
+  audios: yup.bool(),
+  links: yup.bool(),
 });
 
 const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
-const SCRAPE_CONTENT_MEDIA_LIST_PAGES = {
-  name: "scrape_list_content_media",
-  description: "Scrapes content and media from a list of pages.",
-  category: "scraping",
+const SCRAPE_MEDIA_LIST_PAGES = {
+  name: "crawler",
+  description: "Crawls all pages under a number of base url.",
+  category: "media_scraping",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
@@ -21,12 +26,19 @@ const SCRAPE_CONTENT_MEDIA_LIST_PAGES = {
   parameters: scraperJSONSchema,
   rerun: false,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ urlList }, memory) => {
+  runCmd: async (
+    { urlList, content, images, videos, audios, links },
+    memory
+  ) => {
     try {
       const config = {
-        type: "link",
+        type: "crawl",
         whiteList: urlList,
-        extractMedia: true,
+        Content: content,
+        Images: images,
+        Videos: videos,
+        Audios: audios,
+        Links: links,
       };
       const response = await axios.post(
         API + "/scrape?url=" + urlList[0],
@@ -46,4 +58,4 @@ const SCRAPE_CONTENT_MEDIA_LIST_PAGES = {
   },
 };
 
-module.exports = SCRAPE_CONTENT_MEDIA_LIST_PAGES;
+module.exports = SCRAPE_MEDIA_LIST_PAGES;

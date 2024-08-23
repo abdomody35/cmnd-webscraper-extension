@@ -4,30 +4,41 @@ const yup = require("yup");
 const yupToJsonSchema = require("../yupToJsonSchema");
 const API = process.env.API_URL;
 
-const crawlerSchema = yup.object({
+const scraperSchema = yup.object({
   urlList: yup.array().of(yup.string()).required(),
+  content: yup.bool(),
+  images: yup.bool(),
+  videos: yup.bool(),
+  audios: yup.bool(),
+  links: yup.bool(),
 });
 
-const crawlerJSONSchema = yupToJsonSchema(crawlerSchema);
+const scraperJSONSchema = yupToJsonSchema(scraperSchema);
 
-const CRAWL_MEDIA_LIST_PAGES = {
-  name: "crawl_list_media",
-  description: "Crawls media from a list of pages.",
-  category: "media_crawling",
+const SCRAPE_MEDIA_LIST_PAGES = {
+  name: "scraper",
+  description: "Scrapes a number of pages.",
+  category: "media_scraping",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
   prerequisites: [],
-  parameters: crawlerJSONSchema,
+  parameters: scraperJSONSchema,
   rerun: false,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ urlList }, memory) => {
+  runCmd: async (
+    { urlList, content, images, videos, audios, links },
+    memory
+  ) => {
     try {
       const config = {
-        type: "crawl",
+        type: "link",
         whiteList: urlList,
-        extractMedia: true,
-        extractContent: false,
+        Content: content,
+        Images: images,
+        Videos: videos,
+        Audios: audios,
+        Links: links,
       };
       const response = await axios.post(
         API + "/scrape?url=" + urlList[0],
@@ -38,7 +49,7 @@ const CRAWL_MEDIA_LIST_PAGES = {
       }
       return {
         responseString:
-          "Crawling completed successfully. Data has been saved in the memory.",
+          "Scraping completed successfully. Data has been saved in the memory.",
         memory: memory,
       };
     } catch (err) {
@@ -47,4 +58,4 @@ const CRAWL_MEDIA_LIST_PAGES = {
   },
 };
 
-module.exports = CRAWL_MEDIA_LIST_PAGES;
+module.exports = SCRAPE_MEDIA_LIST_PAGES;
